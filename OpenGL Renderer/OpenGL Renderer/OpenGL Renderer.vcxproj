@@ -102,10 +102,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\dev\Graphics\Renderer\OpenGL Renderer\OpenGL Renderer\vendor\glad\include;C:\dev\Graphics\Renderer\OpenGL Renderer\OpenGL Renderer\vendor\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\dev\Graphics\Renderer\OpenGL Renderer\OpenGL Renderer\vendor\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,6 +127,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vendor\GLFW\lib-vc2022\glfw3.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="vendor\GLFW\lib-vc2022\glfw3.lib" />
+    <Library Include="vendor\GLFW\lib-vc2022\glfw3dll.lib" />
+    <Library Include="vendor\GLFW\lib-vc2022\glfw3_mt.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vendor\glad\include\glad\gl.h" />
+    <ClInclude Include="vendor\GLFW\include\GLFW\glfw3.h" />
+    <ClInclude Include="vendor\GLFW\include\GLFW\glfw3native.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

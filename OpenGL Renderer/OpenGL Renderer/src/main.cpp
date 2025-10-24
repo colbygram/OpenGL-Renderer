@@ -1,6 +1,10 @@
-#include <iostream>
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
+
+#include <GLFW/glfw3.h>
+
 
 int main(int argc, char* argv[]) {
-	std::cout << "Fornite\n" << std::endl;
+
 	return EXIT_SUCCESS;
 }
