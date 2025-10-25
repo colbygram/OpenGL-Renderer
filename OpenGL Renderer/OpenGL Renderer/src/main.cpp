@@ -5,6 +5,8 @@
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 
+#include <glm.hpp>
+
 int main(int argc, char* argv[]) {
 
 	return 0;
