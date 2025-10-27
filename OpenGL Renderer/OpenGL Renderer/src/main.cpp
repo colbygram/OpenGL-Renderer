@@ -21,7 +21,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-//Triangle points
+//Triangle vertices
 float vertice_data[] = {
 	-0.5f, -0.5f, 0.0f,
 	 0.5f, -0.5f, 0.0f,
@@ -153,6 +153,18 @@ int main(void) {
 	//After compiling the program and using it, we can delete the previously built shaders
 	glDeleteShader(vertex_shader_id);
 	glDeleteShader(fragment_shader_id);
+
+	//Settting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
+	//The first parameter is which vertex atribute location we want to use for our data.
+	//	This value was specified in the vertex shader using the layout (location = 0) ...
+	//The following parameters set how many generic values (# of floats in this situation) will be in our vertex attribute
+	//GL_FLOAT specifies the type of our values in the vertex attribute and GL_FALSE specifies that we don't want to normalize our values
+	//3*sizeof(float) specifies the stride of our array, aka telling OpenGL when our next vertex attribute will be in our array.
+	//Since our array is tightly packed with vertex attributes, we can technically leave that value as 0 and OpenGL will interpret it automatically
+	//The final parameter is a specified offset for the start of our array
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 
 
 	///////////////////RENDER LOOP/////////////////////////////
