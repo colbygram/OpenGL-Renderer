@@ -6,8 +6,8 @@
 //glad Includes and macros
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
-//GLM math library
-#include <glm.hpp>
+//GLM math library using c++ module
+import glm;
 
 //Error callback printed to console whenever error occurs in GLFW
 void error_callback(int error, const char* description)
