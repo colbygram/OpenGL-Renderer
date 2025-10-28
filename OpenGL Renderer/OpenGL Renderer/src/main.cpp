@@ -75,6 +75,8 @@ int main(void) {
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+
+
 	//CREATING GPU MEMORY BUFFERS
 	//You create a region of memory on a GPU using buffer objects.
 	//You then use targets to tell the GPU what those buffers are used for
@@ -87,6 +89,17 @@ int main(void) {
 	//This function creates the buffer object but it is not bound to a target buffer yet
 	//This creates a buffer object which represents memory on the GPU
 	glGenBuffers(1, &VBO);
+
+	//A VAO or Vertex Array Object will store configurations of your vertex attributes and is basically a container for eahc of your vertex attrributes whenever you have them
+	//so each index into the array can be seen as an index to an individual vertex attribute so index 0 might be vertex positions, while index 1 is vertex texture coords
+	
+	//VAO will also store when EnableVertexAttribArray was called and the VBO associated to that vertex attribute
+
+	//Before binding our VBO, setup VAO so that it will store the data in an attribute pointer
+	unsigned int VAO;
+	//Generating 1 VAO and storing its reference ID
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
 
 	//This function binds the target GL_ARRAY_BUFFER to the buffer object, linking the buffer object ID to that target buffer, which describes how that buffer will be used
 	//Only one binding per buffer target is allowed and whenever a new buffer object is associated to a buffer target, any previous binding will be broken
@@ -154,7 +167,7 @@ int main(void) {
 	glDeleteShader(vertex_shader_id);
 	glDeleteShader(fragment_shader_id);
 
-	//Settting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
+	//Setting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
 	//The first parameter is which vertex atribute location we want to use for our data.
 	//	This value was specified in the vertex shader using the layout (location = 0) ...
 	//The following parameters set how many generic values (# of floats in this situation) will be in our vertex attribute
@@ -162,10 +175,15 @@ int main(void) {
 	//3*sizeof(float) specifies the stride of our array, aka telling OpenGL when our next vertex attribute will be in our array.
 	//Since our array is tightly packed with vertex attributes, we can technically leave that value as 0 and OpenGL will interpret it automatically
 	//The final parameter is a specified offset for the start of our array
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	//This function basically interprets our vertex attribute(position, texture coord, etc) in our buffers, because we may store multiple vertex attributes together
+	//So this function would define how we interpet our vertex attribute of the position but we could have another vertex atrtribute of the texture coordinate and specify its
+	//interpretation in the same function
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-
+	//Sets the color that OpenGL will clear with
+	glClearColor(0.5, 0.6, 0.9, 1);
 
 	///////////////////RENDER LOOP/////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
@@ -174,15 +192,23 @@ int main(void) {
 
 		//////////////Render commands//////////////////
 
-		//Sets the color that OpenGL will clear with
-		glClearColor(0.5, 0.6, 0.9, 1);
 		//Specify which buffer to clear
 		glClear(GL_COLOR_BUFFER_BIT);
+		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
+		glUseProgram(shader_program_id);
+		glBindVertexArray(VAO);
+		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
+		//The final parameter is how many vertices we will be drawing
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		//CheckEvents and swap buffers
-		glfwPollEvents();
 		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
+
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(shader_program_id);
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
