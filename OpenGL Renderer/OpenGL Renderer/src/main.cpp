@@ -75,8 +75,6 @@ int main(void) {
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-
-
 	//CREATING GPU MEMORY BUFFERS
 	//You create a region of memory on a GPU using buffer objects.
 	//You then use targets to tell the GPU what those buffers are used for
