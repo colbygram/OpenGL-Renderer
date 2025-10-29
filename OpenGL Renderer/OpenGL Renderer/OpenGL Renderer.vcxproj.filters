@@ -24,6 +24,9 @@
     <ClCompile Include="vendor\glm\include\glm.cppm">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ShaderLoader\ShaderLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="vendor\GLFW\lib-vc2022\glfw3.lib" />
@@ -910,6 +913,9 @@
     <ClInclude Include="vendor\glm\include\vector_relational.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ShaderLoader\ShaderLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="vendor\GLFW\lib-vc2022\glfw3.dll" />
@@ -1396,5 +1402,6 @@
     <None Include="vendor\GLFW\docs\html\vulkan_guide.html" />
     <None Include="vendor\GLFW\docs\html\window_8md.html" />
     <None Include="vendor\GLFW\docs\html\window_guide.html" />
+    <None Include="res\shaders\shader_placeholder.vert" />
   </ItemGroup>
 </Project>

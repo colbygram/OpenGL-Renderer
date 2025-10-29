@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ShaderLoader\ShaderLoader.cpp" />
     <ClCompile Include="vendor\glm\include\detail\glm.cpp" />
     <ClCompile Include="vendor\glm\include\glm.cppm" />
   </ItemGroup>
@@ -162,6 +163,7 @@
     <Library Include="vendor\GLFW\lib-vc2022\glfw3_mt.lib" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ShaderLoader\ShaderLoader.h" />
     <ClInclude Include="vendor\glad\include\glad\gl.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3native.h" />
@@ -457,6 +459,7 @@
     <ClInclude Include="vendor\glm\include\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\shader_placeholder.vert" />
     <None Include="vendor\GLFW\docs\html\build_8md.html" />
     <None Include="vendor\GLFW\docs\html\build_guide.html" />
     <None Include="vendor\GLFW\docs\html\compat_8md.html" />

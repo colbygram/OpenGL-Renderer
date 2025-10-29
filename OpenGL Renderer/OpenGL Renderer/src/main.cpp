@@ -1,4 +1,5 @@
 #include <iostream>
+#include "ShaderLoader/ShaderLoader.h"
 //GLFW Includes and macros
 #define GLFW_DLL
 #define GLFW_INCLUDE_NONE
@@ -55,6 +56,9 @@ const char* fragment_shader_source =
 
 int main(void) {
 	std::cout << "Lets live life to the fullest\n\n";
+	std::string vertStr = LoadShader("res/shaders/shader_placeholder.vert");
+	const char* vert_out = vertStr.c_str();
+
 	glfwSetErrorCallback(error_callback);
 
 	if (!glfwInit()) exit(EXIT_FAILURE);
@@ -121,7 +125,7 @@ int main(void) {
 	unsigned int vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
 
 	//Attach the vertex_shader_source to the vertex_shader_id so that the source code is sent into the created shader object
-	glShaderSource(vertex_shader_id, 1, &vertex_shader_source, nullptr);
+	glShaderSource(vertex_shader_id, 1, &vert_out, nullptr);
 
 	//Tell the program to compile the previously setup vertex shader code
 	glCompileShader(vertex_shader_id);
@@ -221,6 +225,7 @@ int main(void) {
 	}
 
 	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shader_program_id);
 
