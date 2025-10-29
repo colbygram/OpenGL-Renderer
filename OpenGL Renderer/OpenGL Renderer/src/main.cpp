@@ -115,7 +115,6 @@ int main(void) {
 	//Sending vertice_data to the VBO buffer by using the GL_ARRAY_BUFFER target
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertice_data), vertice_data, GL_STATIC_DRAW);
 
-
 	///////////MAKING SHADERS/////////////////
 	
 	//Create shader object that will then have the vertex shader code provided to it
@@ -190,11 +189,14 @@ int main(void) {
 	unsigned int EBO;
 	glGenBuffers(1, &EBO);
 
+	//When binding element buffer objects, a VAO will store this binding if it is currently bound
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//Sets the color that OpenGL will clear with
 	glClearColor(0.5, 0.6, 0.9, 1);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	///////////////////RENDER LOOP/////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
@@ -210,7 +212,8 @@ int main(void) {
 		glBindVertexArray(VAO);
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//CheckEvents and swap buffers
 		glfwSwapBuffers(window);
