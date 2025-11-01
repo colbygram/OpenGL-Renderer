@@ -119,6 +119,14 @@ int main(void) {
 	//Sending vertice_data to the VBO buffer by using the GL_ARRAY_BUFFER target
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertice_data), vertice_data, GL_STATIC_DRAW);
 
+	//Enables the usage of the vertex attribute array at the given index in a VAO
+	glEnableVertexAttribArray(0);
+
+	//This function basically interprets our vertex attribute(position, texture coord, etc) in our buffers, because we may store multiple vertex attributes together
+	//So this function would define how we interpet our vertex attribute of the position but we could have another vertex atrtribute of the texture coordinate and specify its
+	//interpretation in the same function
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	
 	///////////MAKING SHADERS/////////////////
 	
 	//Create shader object that will then have the vertex shader code provided to it
@@ -183,11 +191,6 @@ int main(void) {
 	//Since our array is tightly packed with vertex attributes, we can technically leave that value as 0 and OpenGL will interpret it automatically
 	//The final parameter is a specified offset for the start of our array
 
-	//This function basically interprets our vertex attribute(position, texture coord, etc) in our buffers, because we may store multiple vertex attributes together
-	//So this function would define how we interpet our vertex attribute of the position but we could have another vertex atrtribute of the texture coordinate and specify its
-	//interpretation in the same function
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	//Generating an element buffer object to store indice information
 	unsigned int EBO;
