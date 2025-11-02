@@ -1,26 +1,17 @@
-#include <iostream>
-#include "ShaderLoader/ShaderLoader.h"
 //GLFW Includes and macros
-#define GLFW_DLL
-#define GLFW_INCLUDE_NONE
+#define GLFW_DLL //Using GLFW DLL libraries
+#define GLFW_INCLUDE_NONE //Tell GLFW not to include GL stuff
 #include <GLFW/glfw3.h>
+
 //glad Includes and macros
-#define GLAD_GL_IMPLEMENTATION
+#define GLAD_GL_IMPLEMENTATION //glad header only macro // includes function implementations
 #include <glad/gl.h>
+
 //GLM math library using c++ module
 import glm;
 
-//Error callback printed to console whenever error occurs in GLFW
-void error_callback(int error, const char* description)
-{
-	fprintf(stderr, "Error: %s\n", description);
-}
-
-//resize callback whenever the window is resized
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
+#include <iostream>
+#include "ShaderLoader/ShaderLoader.h"
 
 //Triangle vertices
 float vertice_data[] = {
@@ -35,31 +26,16 @@ unsigned int indices[] = {  // note that we start from 0!
 	1, 2, 3    // second triangle
 };
 
-//Vertex Shader Code source
-const char* vertex_shader_source =
-"#version 330 core                                  \n"
-"layout (location = 0) in vec3 aPos;                \n"
-"void main()                                        \n"
-"{                                                  \n"
-"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}                                                  \0";
-
-//Fragment Shader Code source
-const char* fragment_shader_source =
-"#version 330 core                           \n"
-"out vec4 FragColor;                         \n"
-"void main()                                 \n"
-"{                                           \n"
-"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}                                           \0";
-
-
 int main(void) {
 	std::cout << "Lets live life to the fullest\n\n";
-	std::string vertStr = LoadShader("res/shaders/shader_placeholder.vert");
-	const char* vert_out = vertStr.c_str();
 
-	glfwSetErrorCallback(error_callback);
+	//Setting error callbacks using lamda expressions
+	glfwSetErrorCallback(
+		[](int error, const char* description)
+		{
+			fprintf(stderr, "Error: %s\n", description);
+		}
+	);
 
 	if (!glfwInit()) exit(EXIT_FAILURE);
 
@@ -83,7 +59,14 @@ int main(void) {
 	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	//Setting Framebuffer size callbacks using lamda expressions
+	glfwSetFramebufferSizeCallback(window, 
+		[](GLFWwindow* window, int width, int height) 
+		{
+			glViewport(0, 0, width, height);
+		}
+	);
 
 	//CREATING GPU MEMORY BUFFERS
 	//You create a region of memory on a GPU using buffer objects.
@@ -122,12 +105,27 @@ int main(void) {
 	//Enables the usage of the vertex attribute array at the given index in a VAO
 	glEnableVertexAttribArray(0);
 
+	//Setting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
+	//The first parameter is which vertex attribute location we want to use for our data.
+	//	This value was specified in the vertex shader using the layout (location = 0) ...
+	//The following parameters set how many generic values (# of floats in this situation) will be in our vertex attribute
+	//GL_FLOAT specifies the type of our values in the vertex attribute and GL_FALSE specifies that we don't want to normalize our values
+	//3*sizeof(float) specifies the stride of our array, aka telling OpenGL when our next vertex attribute will be in our array.
+	//Since our array is tightly packed with vertex attributes, we can technically leave that value as 0 and OpenGL will interpret it automatically
+	//The final parameter is a specified offset for the start of our array
+
 	//This function basically interprets our vertex attribute(position, texture coord, etc) in our buffers, because we may store multiple vertex attributes together
 	//So this function would define how we interpet our vertex attribute of the position but we could have another vertex atrtribute of the texture coordinate and specify its
 	//interpretation in the same function
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	
 	///////////MAKING SHADERS/////////////////
+
+	//Using LoadShader function to interpret separate shader files
+	std::string vertStr = LoadShader("res/shaders/shader_placeholder.vert");
+	std::string fragStr = LoadShader("res/shaders/fragment_placeholder.frag");
+	const char* vert_out = vertStr.c_str();
+	const char* frag_out = fragStr.c_str();
 	
 	//Create shader object that will then have the vertex shader code provided to it
 	unsigned int vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
@@ -150,7 +148,7 @@ int main(void) {
 
 	//Use similar process for making fragment shader
 	unsigned int fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_shader_id, 1, &fragment_shader_source, nullptr);
+	glShaderSource(fragment_shader_id, 1, &frag_out, nullptr);
 	glCompileShader(fragment_shader_id);
 	glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &success);
 	if (!success) {
@@ -182,16 +180,6 @@ int main(void) {
 	glDeleteShader(vertex_shader_id);
 	glDeleteShader(fragment_shader_id);
 
-	//Setting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
-	//The first parameter is which vertex atribute location we want to use for our data.
-	//	This value was specified in the vertex shader using the layout (location = 0) ...
-	//The following parameters set how many generic values (# of floats in this situation) will be in our vertex attribute
-	//GL_FLOAT specifies the type of our values in the vertex attribute and GL_FALSE specifies that we don't want to normalize our values
-	//3*sizeof(float) specifies the stride of our array, aka telling OpenGL when our next vertex attribute will be in our array.
-	//Since our array is tightly packed with vertex attributes, we can technically leave that value as 0 and OpenGL will interpret it automatically
-	//The final parameter is a specified offset for the start of our array
-
-
 	//Generating an element buffer object to store indice information
 	unsigned int EBO;
 	glGenBuffers(1, &EBO);
@@ -205,17 +193,25 @@ int main(void) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	int vertexColorLocation = glGetUniformLocation(shader_program_id, "ourColor");
+	
 	///////////////////RENDER LOOP/////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
 		//Check inputs
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
 
 		//////////////Render commands//////////////////
+		
+		float time = glfwGetTime();
+		float green = abs((sin(time)));
 
 		//Specify which buffer to clear
 		glClear(GL_COLOR_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(shader_program_id);
+		//Sets uniform using location and inserts values. Must be called after UseProgram since it only works on active shader program
+		glUniform4f(vertexColorLocation, 0.0f, green, 0.0f, 1.0f);
+
 		glBindVertexArray(VAO);
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing

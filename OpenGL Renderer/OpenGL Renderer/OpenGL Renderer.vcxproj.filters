@@ -1403,5 +1403,6 @@
     <None Include="vendor\GLFW\docs\html\window_8md.html" />
     <None Include="vendor\GLFW\docs\html\window_guide.html" />
     <None Include="res\shaders\shader_placeholder.vert" />
+    <None Include="res\shaders\fragment_placeholder.frag" />
   </ItemGroup>
 </Project>

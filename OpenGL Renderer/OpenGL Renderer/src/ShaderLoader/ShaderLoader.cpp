@@ -3,28 +3,27 @@
 #include <iostream>
 
 std::string LoadShader(std::string file_path) {
-    // 1. retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
-    std::ifstream vShaderFile;
+    std::ifstream shaderFile;
 
     // ensure ifstream objects can throw exceptions:
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try
     {
         // open files
-        vShaderFile.open(file_path);
+        shaderFile.open(file_path);
 
-        std::stringstream vShaderStream;
+        std::stringstream shaderStream;
         // read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
+        shaderStream << shaderFile.rdbuf();
         // close file handlers
-        vShaderFile.close();
+        shaderFile.close();
         // convert stream into string
-        vertexCode = vShaderStream.str();
+        vertexCode = shaderStream.str();
     }
     catch (std::ifstream::failure e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ::PATH = " + file_path << std::endl;
     }
     return vertexCode;
 }

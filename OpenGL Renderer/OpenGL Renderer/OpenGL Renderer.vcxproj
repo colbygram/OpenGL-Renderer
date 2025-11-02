@@ -459,6 +459,7 @@
     <ClInclude Include="vendor\glm\include\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\fragment_placeholder.frag" />
     <None Include="res\shaders\shader_placeholder.vert" />
     <None Include="vendor\GLFW\docs\html\build_8md.html" />
     <None Include="vendor\GLFW\docs\html\build_guide.html" />
