@@ -15,10 +15,10 @@ import glm;
 
 //Triangle vertices
 float vertice_data[] = {
-	 0.5f,  0.5f, 0.0f,  // top right
-	 0.5f, -0.5f, 0.0f,  // bottom right
-	-0.5f, -0.5f, 0.0f,  // bottom left
-	-0.5f,  0.5f, 0.0f   // top left 
+	//Positions          Colors
+	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  
+	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 
+	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f 
 };
 
 unsigned int indices[] = {  // note that we start from 0!
@@ -102,22 +102,31 @@ int main(void) {
 	//Sending vertice_data to the VBO buffer by using the GL_ARRAY_BUFFER target
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertice_data), vertice_data, GL_STATIC_DRAW);
 
-	//Enables the usage of the vertex attribute array at the given index in a VAO
-	glEnableVertexAttribArray(0);
 
 	//Setting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
-	//The first parameter is which vertex attribute location we want to use for our data.
-	//	This value was specified in the vertex shader using the layout (location = 0) ...
+	//The first parameter is which vertex attribute location we want to use for our data which is the index of the vertex attribute in the VAO array
+	//	This value was specified in the vertex shader using the layout (location = 0) and is our first index in the VAO array
+	 
 	//The following parameters set how many generic values (# of floats in this situation) will be in our vertex attribute
 	//GL_FLOAT specifies the type of our values in the vertex attribute and GL_FALSE specifies that we don't want to normalize our values
+	
 	//3*sizeof(float) specifies the stride of our array, aka telling OpenGL when our next vertex attribute will be in our array.
 	//Since our array is tightly packed with vertex attributes, we can technically leave that value as 0 and OpenGL will interpret it automatically
-	//The final parameter is a specified offset for the start of our array
+	
+	//The final parameter is a specified offset for the start of our array. The offset is determined through bytes
 
+	//PERSONAL NOTES:
 	//This function basically interprets our vertex attribute(position, texture coord, etc) in our buffers, because we may store multiple vertex attributes together
 	//So this function would define how we interpet our vertex attribute of the position but we could have another vertex atrtribute of the texture coordinate and specify its
 	//interpretation in the same function
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+	//Enables the usage of the vertex attribute array at the given index in a VAO
+	glEnableVertexAttribArray(0);
+
+	//Setting up color vertex attributes in VBO
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 	
 	///////////MAKING SHADERS/////////////////
 
@@ -203,20 +212,21 @@ int main(void) {
 		//////////////Render commands//////////////////
 		
 		float time = glfwGetTime();
-		float green = abs((sin(time)));
-
+		float green = abs(sin(time));
+		float red = abs(sin(time-3.145f));
+		float blue = abs(sin(time+3.145f));
 		//Specify which buffer to clear
 		glClear(GL_COLOR_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(shader_program_id);
 		//Sets uniform using location and inserts values. Must be called after UseProgram since it only works on active shader program
-		glUniform4f(vertexColorLocation, 0.0f, green, 0.0f, 1.0f);
+		glUniform4f(vertexColorLocation, red, green, blue, 1.0f);
 
 		glBindVertexArray(VAO);
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//CheckEvents and swap buffers
 		glfwSwapBuffers(window);
