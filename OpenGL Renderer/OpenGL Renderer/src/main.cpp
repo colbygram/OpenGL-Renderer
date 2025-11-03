@@ -22,8 +22,7 @@ float vertice_data[] = {
 };
 
 unsigned int indices[] = {  // note that we start from 0!
-	0, 1, 3,   // first triangle
-	1, 2, 3    // second triangle
+	0, 1, 2,   // first triangle
 };
 
 int main(void) {
@@ -69,17 +68,6 @@ int main(void) {
 	);
 
 	//CREATING GPU MEMORY BUFFERS
-	//You create a region of memory on a GPU using buffer objects.
-	//You then use targets to tell the GPU what those buffers are used for
-	//For example, i create a buffer object VBO_1 and then bind it to a GL_ARRAY_BUFFER which tells the GPU that the memory section of VBO_1 will be used for vertex data input
-
-	//first vertex buffer object
-	//This int stores the unique ID of the OpenGL object (buffer)
-	unsigned int VBO;
-
-	//This function creates the buffer object but it is not bound to a target buffer yet
-	//This creates a buffer object which represents memory on the GPU
-	glGenBuffers(1, &VBO);
 
 	//A VAO or Vertex Array Object will store configurations of your vertex attributes and is basically a container for eahc of your vertex attrributes whenever you have them
 	//so each index into the array can be seen as an index to an individual vertex attribute so index 0 might be vertex positions, while index 1 is vertex texture coords
@@ -92,6 +80,18 @@ int main(void) {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
+	//You create a region of memory on a GPU using buffer objects.
+	//You then use targets to tell the GPU what those buffers are used for
+	//For example, i create a buffer object VBO_1 and then bind it to a GL_ARRAY_BUFFER which tells the GPU that the memory section of VBO_1 will be used for vertex data input
+
+	//first vertex buffer object
+	//This int stores the unique ID of the OpenGL object (buffer)
+	unsigned int VBO;
+
+	//This function creates the buffer object but it is not bound to a target buffer yet
+	//This creates a buffer object which represents memory on the GPU
+	glGenBuffers(1, &VBO);
+
 	//This function binds the target GL_ARRAY_BUFFER to the buffer object, linking the buffer object ID to that target buffer, which describes how that buffer will be used
 	//Only one binding per buffer target is allowed and whenever a new buffer object is associated to a buffer target, any previous binding will be broken
 	//But a buffer object can be bound to multiple targets, meaning that the memory associated to the buffer object can be used to store multiple types of data (vertexes, shaders, etc.)
@@ -101,7 +101,6 @@ int main(void) {
 
 	//Sending vertice_data to the VBO buffer by using the GL_ARRAY_BUFFER target
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertice_data), vertice_data, GL_STATIC_DRAW);
-
 
 	//Setting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
 	//The first parameter is which vertex attribute location we want to use for our data which is the index of the vertex attribute in the VAO array
@@ -167,8 +166,8 @@ int main(void) {
 		glBindVertexArray(VAO);
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		//CheckEvents and swap buffers
 		glfwSwapBuffers(window);
