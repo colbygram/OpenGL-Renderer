@@ -8,6 +8,7 @@
 unsigned int CreateShaderProgram(std::string   vs_shader_file_path,  //vertex shader file path
 					             std::string   fs_shader_file_path); //fragment shader file path
 
+#endif
 														/////PREVIOUS PROCESS OF MAKING SHADERS IN MAIN///////////
 
 ////Using LoadShader function to interpret separate shader files
@@ -68,5 +69,3 @@ unsigned int CreateShaderProgram(std::string   vs_shader_file_path,  //vertex sh
 	////After compiling the program and using it, we can delete the previously built shaders
 	//glDeleteShader(vertex_shader_id);
 	//glDeleteShader(fragment_shader_id);
-
-#endif
