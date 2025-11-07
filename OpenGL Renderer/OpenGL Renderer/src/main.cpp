@@ -209,8 +209,6 @@ int main(void) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(program_id);
-		//Sets uniform using location and inserts values. Must be called after UseProgram since it only works on active shader program
-		//glUniform4f(vertexColorLocation, red, green, blue, 1.0f);
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
