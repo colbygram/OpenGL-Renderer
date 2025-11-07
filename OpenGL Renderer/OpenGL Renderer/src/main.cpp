@@ -20,10 +20,10 @@ import glm;
 //Triangle vertices
 float vertice_data[] = {
 	//Positions          Colors             Texture Coords
-	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  4.0f, 4.0f,
+	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  4.0f, 0.0f,
 	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-	-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f
+	-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 4.0f
 };
 
 unsigned int indices[] = {  // note that we start from 0!
