@@ -28,7 +28,7 @@ float vertice_data[] = {
 
 unsigned int indices[] = {  // note that we start from 0!
 	0, 1, 2,   // first triangle
-	0, 3, 2
+	0, 3, 2	   // second triangle
 };
 
 int main(void) {
@@ -147,35 +147,52 @@ int main(void) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+
+	//int vertexColorLocation = glGetUniformLocation(program_id, "ourColor");
+
+	unsigned int texture_id, texture_id2;
+	glGenTextures(1, &texture_id);
+	glGenTextures(1, &texture_id2);
+	
+	stbi_set_flip_vertically_on_load(true);
+	int texture_width, texture_height, texture_nr_channels;
+
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+	//Sets texture settings per axis (S,T)
+	//Set each axis wrap setting by specifying it as a wrap and which axis. Then provide the wrap setting
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//Setting the texture filtering for magnifying and minifying
+	//Dont ever need to set Magnifying filter for mipmaps since mipmaps are generally only used for downscaled textures
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	unsigned char* texture_data = stbi_load("res/textures/hotdog.jpg", &texture_width, &texture_height, &texture_nr_channels, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_width, texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(texture_data);
+	
+	glBindTexture(GL_TEXTURE_2D, texture_id2);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	unsigned char* texture_data1 = stbi_load("res/textures/awesomeface.png", &texture_width, &texture_height, &texture_nr_channels, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data1);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(texture_data1);
+
+	//Assign the uniform values in the frag shader
+	glUseProgram(program_id);
+	glUniform1i(glGetUniformLocation(program_id, "texture1"), 0);
+	glUniform1i(glGetUniformLocation(program_id, "texture2"), 1);
+
 	//Sets the color that OpenGL will clear with
 	glClearColor(0.5, 0.6, 0.9, 1);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	//int vertexColorLocation = glGetUniformLocation(program_id, "ourColor");
-
-	unsigned int texture_id;
-	glGenTextures(1, &texture_id);
-
-	glBindTexture(GL_TEXTURE_2D, texture_id);
-	
-	//Sets texture settings per axis (S,T)
-	//Set each axis wrap setting by specifying it as a wrap and which axis. Then provide the wrap setting
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-	//Setting the texture filtering for magnifying and minifying
-	//Dont ever need to set Magnifying filter for mipmaps since mipmaps are generally only used for downscaled textures
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-	int texture_width, texture_height, texture_nr_channels;
-	unsigned char* texture_data = stbi_load("res/textures/hotdog.jpg", &texture_width, &texture_height, &texture_nr_channels, 0);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_width, texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	stbi_image_free(texture_data);
 
 	///////////////////RENDER LOOP/////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
@@ -194,7 +211,12 @@ int main(void) {
 		glUseProgram(program_id);
 		//Sets uniform using location and inserts values. Must be called after UseProgram since it only works on active shader program
 		//glUniform4f(vertexColorLocation, red, green, blue, 1.0f);
+		
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture_id2);
+
 		glBindVertexArray(VAO);
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing
@@ -210,6 +232,7 @@ int main(void) {
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteTextures(1, &texture_id);
+	glDeleteTextures(1, &texture_id2);
 	glDeleteProgram(program_id);
 
 	glfwDestroyWindow(window);

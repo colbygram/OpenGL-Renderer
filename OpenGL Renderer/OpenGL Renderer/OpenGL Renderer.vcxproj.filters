@@ -1412,5 +1412,11 @@
     <Image Include="res\textures\hotdog.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\awesomeface.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\container.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

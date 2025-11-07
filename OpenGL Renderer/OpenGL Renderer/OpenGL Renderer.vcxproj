@@ -665,6 +665,8 @@
     <None Include="vendor\glm\include\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\textures\awesomeface.png" />
+    <Image Include="res\textures\container.jpg" />
     <Image Include="res\textures\hotdog.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
