@@ -916,6 +916,9 @@
     <ClInclude Include="src\ShaderLoader\ShaderLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\includes\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="vendor\GLFW\lib-vc2022\glfw3.dll" />
@@ -1404,5 +1407,10 @@
     <None Include="vendor\GLFW\docs\html\window_guide.html" />
     <None Include="res\shaders\shader_placeholder.vert" />
     <None Include="res\shaders\fragment_placeholder.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\hotdog.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

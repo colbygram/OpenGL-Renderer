@@ -10,19 +10,25 @@
 //GLM math library using c++ module
 import glm;
 
+//STB file loader header library
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include <iostream>
 #include "ShaderLoader/ShaderLoader.h"
 
 //Triangle vertices
 float vertice_data[] = {
-	//Positions          Colors
-	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  
-	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 
-	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f 
+	//Positions          Colors             Texture Coords
+	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+	-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f
 };
 
 unsigned int indices[] = {  // note that we start from 0!
 	0, 1, 2,   // first triangle
+	0, 3, 2
 };
 
 int main(void) {
@@ -118,14 +124,17 @@ int main(void) {
 	//This function basically interprets our vertex attribute(position, texture coord, etc) in our buffers, because we may store multiple vertex attributes together
 	//So this function would define how we interpet our vertex attribute of the position but we could have another vertex atrtribute of the texture coordinate and specify its
 	//interpretation in the same function
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 
 	//Enables the usage of the vertex attribute array at the given index in a VAO
 	glEnableVertexAttribArray(0);
 
 	//Setting up color vertex attributes in VBO
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 	
 	///////////MAKING SHADERS/////////////////
 	unsigned int program_id = CreateShaderProgram("res/shaders/shader_placeholder.vert", "res/shaders/fragment_placeholder.frag");
@@ -143,8 +152,31 @@ int main(void) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	int vertexColorLocation = glGetUniformLocation(program_id, "ourColor");
+	//int vertexColorLocation = glGetUniformLocation(program_id, "ourColor");
+
+	unsigned int texture_id;
+	glGenTextures(1, &texture_id);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id);
 	
+	//Sets texture settings per axis (S,T)
+	//Set each axis wrap setting by specifying it as a wrap and which axis. Then provide the wrap setting
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+	//Setting the texture filtering for magnifying and minifying
+	//Dont ever need to set Magnifying filter for mipmaps since mipmaps are generally only used for downscaled textures
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	int texture_width, texture_height, texture_nr_channels;
+	unsigned char* texture_data = stbi_load("res/textures/hotdog.jpg", &texture_width, &texture_height, &texture_nr_channels, 0);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_width, texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	stbi_image_free(texture_data);
+
 	///////////////////RENDER LOOP/////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
 		//Check inputs
@@ -161,13 +193,13 @@ int main(void) {
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(program_id);
 		//Sets uniform using location and inserts values. Must be called after UseProgram since it only works on active shader program
-		glUniform4f(vertexColorLocation, red, green, blue, 1.0f);
-
+		//glUniform4f(vertexColorLocation, red, green, blue, 1.0f);
+		glBindTexture(GL_TEXTURE_2D, texture_id);
 		glBindVertexArray(VAO);
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//CheckEvents and swap buffers
 		glfwSwapBuffers(window);
@@ -177,6 +209,7 @@ int main(void) {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteTextures(1, &texture_id);
 	glDeleteProgram(program_id);
 
 	glfwDestroyWindow(window);
