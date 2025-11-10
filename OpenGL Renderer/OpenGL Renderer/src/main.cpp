@@ -201,10 +201,6 @@ int main(void) {
 
 		//////////////Render commands//////////////////
 		
-		float time = glfwGetTime();
-		float green = abs(sin(time));
-		float red = abs(sin(time-3.145f));
-		float blue = abs(sin(time+3.145f));
 		//Specify which buffer to clear
 		glClear(GL_COLOR_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
