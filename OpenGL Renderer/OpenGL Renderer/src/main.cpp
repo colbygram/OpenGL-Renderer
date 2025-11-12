@@ -8,7 +8,9 @@
 #include <glad/gl.h>
 
 //GLM math library using c++ module
-import glm;
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc//type_ptr.hpp>
 
 //STB file loader header library
 #define STB_IMAGE_IMPLEMENTATION
@@ -205,6 +207,12 @@ int main(void) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(program_id);
+		glm::mat4 transform(1.0f);
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 0.0f));
+		//transform = glm::rotate(transform, (float)glfwGetTime() , glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(glGetUniformLocation(program_id, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id);
