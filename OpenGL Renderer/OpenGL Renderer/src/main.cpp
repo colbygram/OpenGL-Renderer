@@ -77,7 +77,7 @@ int main(void) {
 
 	//CREATING GPU MEMORY BUFFERS
 
-	//A VAO or Vertex Array Object will store configurations of your vertex attributes and is basically a container for eahc of your vertex attrributes whenever you have them
+	//A VAO or Vertex Array Object will store configurations of your vertex attributes and is basically a container for each of your vertex attrributes whenever you have them
 	//so each index into the array can be seen as an index to an individual vertex attribute so index 0 might be vertex positions, while index 1 is vertex texture coords
 	
 	//VAO will also store when EnableVertexAttribArray was called and the VBO associated to that vertex attribute
@@ -135,6 +135,7 @@ int main(void) {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
+	//Setting up texture coords
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 	
@@ -152,14 +153,15 @@ int main(void) {
 
 	//int vertexColorLocation = glGetUniformLocation(program_id, "ourColor");
 
-	unsigned int texture_id, texture_id2;
-	glGenTextures(1, &texture_id);
+	unsigned int texture_id1, texture_id2;
+	glGenTextures(1, &texture_id1);
 	glGenTextures(1, &texture_id2);
 	
 	stbi_set_flip_vertically_on_load(true);
+
 	int texture_width, texture_height, texture_nr_channels;
 
-	glBindTexture(GL_TEXTURE_2D, texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id1);
 	//Sets texture settings per axis (S,T)
 	//Set each axis wrap setting by specifying it as a wrap and which axis. Then provide the wrap setting
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -169,10 +171,10 @@ int main(void) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	unsigned char* texture_data = stbi_load("res/textures/hotdog.jpg", &texture_width, &texture_height, &texture_nr_channels, 0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_width, texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data);
+	unsigned char* texture_data1 = stbi_load("res/textures/hotdog.jpg", &texture_width, &texture_height, &texture_nr_channels, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_width, texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data1);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(texture_data);
+	stbi_image_free(texture_data1);
 	
 	glBindTexture(GL_TEXTURE_2D, texture_id2);
 
@@ -181,10 +183,10 @@ int main(void) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	unsigned char* texture_data1 = stbi_load("res/textures/awesomeface.png", &texture_width, &texture_height, &texture_nr_channels, 0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data1);
+	unsigned char* texture_data2 = stbi_load("res/textures/awesomeface.png", &texture_width, &texture_height, &texture_nr_channels, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data2);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(texture_data1);
+	stbi_image_free(texture_data2);
 
 	//Assign the uniform values in the frag shader
 	glUseProgram(program_id);
@@ -215,7 +217,7 @@ int main(void) {
 		glUniformMatrix4fv(glGetUniformLocation(program_id, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 		
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture_id);
+		glBindTexture(GL_TEXTURE_2D, texture_id1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture_id2);
 
@@ -233,7 +235,7 @@ int main(void) {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteTextures(1, &texture_id);
+	glDeleteTextures(1, &texture_id1);
 	glDeleteTextures(1, &texture_id2);
 	glDeleteProgram(program_id);
 
