@@ -34,7 +34,7 @@ unsigned int indices[] = {  // note that we start from 0!
 };
 
 int main(void) {
-	std::cout << "Lets live life to the fullest\n\n";
+	std::cout << "Lets Aim For The Stars\n\n";
 
 	//Setting error callbacks using lamda expressions
 	glfwSetErrorCallback(
