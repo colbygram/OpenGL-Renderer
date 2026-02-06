@@ -209,6 +209,7 @@ int main(void) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(program_id);
+		//identity 4x4 matrix
 		glm::mat4 transform(1.0f);
 		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
