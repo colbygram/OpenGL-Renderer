@@ -22,10 +22,10 @@
 //Triangle vertices
 float vertice_data[] = {
 	//Positions          Colors             Texture Coords
-	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  4.0f, 4.0f,
-	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  4.0f, 0.0f,
+	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
 	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-	-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 4.0f
+	-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f
 };
 
 unsigned int indices[] = {  // note that we start from 0!
@@ -209,10 +209,11 @@ int main(void) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(program_id);
-		//Identity 4x4 matrix
-		 glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f)) * glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glUniformMatrix4fv(glGetUniformLocation(program_id, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+		glm::mat4 transform = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 newTransform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0));
+
+		glUniformMatrix4fv(glGetUniformLocation(program_id, "transform"), 1, GL_FALSE, glm::value_ptr(newTransform));
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id1);
