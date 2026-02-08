@@ -30,7 +30,7 @@ float vertice_data[] = {
 
 unsigned int indices[] = {  // note that we start from 0!
 	0, 1, 2,   // first triangle
-	0, 3, 2	   // second triangle
+	0, 3, 2   // second triangle
 };
 
 int main(void) {
@@ -140,7 +140,7 @@ int main(void) {
 	glEnableVertexAttribArray(2);
 	
 	///////////MAKING SHADERS/////////////////
-	unsigned int program_id = CreateShaderProgram("res/shaders/shader_placeholder.vert", "res/shaders/fragment_placeholder.frag");
+	unsigned int program_id = ShaderLoader::CreateShaderProgram("res/shaders/shader_placeholder.vert", "res/shaders/fragment_placeholder.frag");
 
 	//Generating an element buffer object to store indice information
 	unsigned int EBO;

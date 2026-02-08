@@ -56,7 +56,7 @@ static bool LinkShaderProgram(const unsigned int shader_program_id) {
     return true;
 }
 
-unsigned int CreateShaderProgram(std::string   vs_shader_file_path,
+unsigned int ShaderLoader::CreateShaderProgram(std::string   vs_shader_file_path,
                                  std::string   fs_shader_file_path)
 {
     std::string vertex_str   = LoadShader(vs_shader_file_path),
