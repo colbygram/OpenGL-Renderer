@@ -19,14 +19,63 @@
 #include <iostream>
 #include "ShaderLoader/ShaderLoader.h"
 
-//Triangle vertices
-float vertice_data[] = {
-	//Positions          Colors             Texture Coords
-	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-	-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f
+float vertices[] = {
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
+
+glm::vec3 cubePositions[] = {
+	glm::vec3(0.0f,  0.0f,  0.0f),
+	glm::vec3(2.0f,  5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f,  3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f,  2.0f, -2.5f),
+	glm::vec3(1.5f,  0.2f, -1.5f),
+	glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
 
 unsigned int indices[] = {  // note that we start from 0!
 	0, 1, 2,   // first triangle
@@ -108,7 +157,7 @@ int main(void) {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	//Sending vertice_data to the VBO buffer by using the GL_ARRAY_BUFFER target
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertice_data), vertice_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	//Setting vertex attributes so that OpenGL can tell the GPU and shaders how to interpret the vertice data provided
 	//The first parameter is which vertex attribute location we want to use for our data which is the index of the vertex attribute in the VAO array
@@ -126,18 +175,18 @@ int main(void) {
 	//This function basically interprets our vertex attribute(position, texture coord, etc) in our buffers, because we may store multiple vertex attributes together
 	//So this function would define how we interpet our vertex attribute of the position but we could have another vertex atrtribute of the texture coordinate and specify its
 	//interpretation in the same function
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 
 	//Enables the usage of the vertex attribute array at the given index in a VAO
 	glEnableVertexAttribArray(0);
 
 	//Setting up color vertex attributes in VBO
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
 
 	//Setting up texture coords
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 	
 	///////////MAKING SHADERS/////////////////
 	unsigned int program_id = ShaderLoader::CreateShaderProgram("res/shaders/shader_placeholder.vert", "res/shaders/fragment_placeholder.frag");
@@ -198,6 +247,8 @@ int main(void) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	glEnable(GL_DEPTH_TEST);
+
 	///////////////////RENDER LOOP/////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
 		//Check inputs
@@ -206,14 +257,16 @@ int main(void) {
 		//////////////Render commands//////////////////
 		
 		//Specify which buffer to clear
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(program_id);
 
-		glm::mat4 transform = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-		glm::mat4 newTransform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0));
+		glm::mat4 viewSpace = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, -3.0f));
+		viewSpace = glm::rotate(viewSpace, glm::radians(35.0f), glm::vec3(1.0f, 0.0, 0.0f));
+		glm::mat4 projectionSpace = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-		glUniformMatrix4fv(glGetUniformLocation(program_id, "transform"), 1, GL_FALSE, glm::value_ptr(newTransform));
+		glUniformMatrix4fv(glGetUniformLocation(program_id, "projection"), 1, GL_FALSE, glm::value_ptr(projectionSpace));
+		glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_FALSE, glm::value_ptr(viewSpace));
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id1);
@@ -223,8 +276,16 @@ int main(void) {
 		glBindVertexArray(VAO);
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		for (int i = 0; i < 10; i++) {
+			glm::mat4 modelSpace = glm::translate(glm::mat4(1.0f), cubePositions[i]);
+			modelSpace = glm::rotate(modelSpace, (float)glfwGetTime(), glm::vec3(1.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(glGetUniformLocation(program_id, "model"), 1, GL_FALSE, glm::value_ptr(modelSpace));
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//CheckEvents and swap buffers
 		glfwSwapBuffers(window);
