@@ -189,7 +189,7 @@ int main(void) {
 	glEnableVertexAttribArray(1);
 	
 	///////////MAKING SHADERS/////////////////
-	unsigned int program_id = ShaderLoader::CreateShaderProgram("res/shaders/shader_placeholder.vert", "res/shaders/fragment_placeholder.frag");
+	unsigned int program_id = Shader::Load::CreateShaderProgram("res/shaders/shader_placeholder.vert", "res/shaders/fragment_placeholder.frag");
 
 	//Generating an element buffer object to store indice information
 	unsigned int EBO;
