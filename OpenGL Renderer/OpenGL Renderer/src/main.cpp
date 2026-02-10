@@ -262,11 +262,18 @@ int main(void) {
 		glUseProgram(program_id);
 
 		glm::mat4 viewSpace = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, -3.0f));
+
+		//Camera needs a forward that can be added to its position so that its look direction can be determined
+		glm::vec3 position(0, 0, 3);
+		glm::vec3 up(0, 1, 0);
+
+		glm::mat4 look_at = glm::lookAt(position, glm::vec3(0, 0, 0), up);
+
 		viewSpace = glm::rotate(viewSpace, glm::radians(35.0f), glm::vec3(1.0f, 0.0, 0.0f));
 		glm::mat4 projectionSpace = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
 		glUniformMatrix4fv(glGetUniformLocation(program_id, "projection"), 1, GL_FALSE, glm::value_ptr(projectionSpace));
-		glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_FALSE, glm::value_ptr(viewSpace));
+		glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_FALSE, glm::value_ptr(look_at));
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture_id1);
