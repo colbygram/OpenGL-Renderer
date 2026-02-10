@@ -287,6 +287,7 @@ int main(void) {
 		float delta_time = (float)glfwGetTime() - previous_frame_time;
 		previous_frame_time = (float)glfwGetTime();
 
+		//Mouse Delta Movement calculation
 		static float previous_mouse_delta_x, previous_mouse_delta_y;
 		double current_mouse_x, current_mouse_y;
 		glfwGetCursorPos(window, &current_mouse_x, &current_mouse_y);
@@ -294,8 +295,11 @@ int main(void) {
 		previous_mouse_delta_x = (float)current_mouse_x;
 		previous_mouse_delta_y = (float)current_mouse_y;
 
-		cam_x_euler -= mouse_delta_y * 0.1f;
-		cam_y_euler += mouse_delta_x * 0.1f;
+		cam_x_euler += mouse_delta_y * 0.1f;
+		cam_y_euler -= mouse_delta_x * 0.1f;
+
+		if (cam_x_euler > 89.0f) cam_x_euler = 89.0f;
+		else if (cam_x_euler < -89.0f) cam_x_euler = -89.0f;
 
 		//https://gamedev.stackexchange.com/questions/190054/how-to-calculate-the-forward-up-right-vectors-using-the-rotation-angles
 		cam_forward.x = glm::cos(glm::radians(cam_x_euler)) * glm::sin(glm::radians(cam_y_euler));
