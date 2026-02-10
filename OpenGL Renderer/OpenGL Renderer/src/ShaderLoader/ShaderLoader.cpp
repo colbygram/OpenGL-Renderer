@@ -1,6 +1,8 @@
-#include "ShaderLoader.h"
+#include "ShaderLoader.hpp"
 
 #include <iostream>
+#include <sstream>
+#include <fstream>
 #include <glad/gl.h>
 
 static std::string LoadShader(const std::string file_path) {

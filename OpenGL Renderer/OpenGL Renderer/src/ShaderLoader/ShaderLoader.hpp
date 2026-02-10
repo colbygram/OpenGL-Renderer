@@ -1,9 +1,7 @@
-#ifndef SHADERLOADER_H
-#define SHADERLOADER_H
+#ifndef SHADERLOADER_HPP
+#define SHADERLOADER_HPP
 
-#include <sstream>
 #include <string>
-#include <fstream>
 
 namespace Shader::Load {
 	unsigned int CreateShaderProgram(std::string   vs_shader_file_path,  //vertex shader file path

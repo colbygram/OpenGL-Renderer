@@ -1,23 +1,4 @@
-//GLFW Includes and macros
-#define GLFW_DLL //Using GLFW DLL libraries
-#define GLFW_INCLUDE_NONE //Tell GLFW not to include GL stuff
-#include <GLFW/glfw3.h>
-
-//glad Includes and macros
-#define GLAD_GL_IMPLEMENTATION //glad header only macro // includes function implementations
-#include <glad/gl.h>
-
-//GLM math library using c++ module
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc//type_ptr.hpp>
-
-//STB file loader header library
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
-#include <iostream>
-#include "ShaderLoader/ShaderLoader.h"
+#include "Include/Resources.hpp"
 
 float vertices[] = {
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -245,7 +226,7 @@ int main(void) {
 	glUniform1i(glGetUniformLocation(program_id, "texture2"), 1);
 
 	//Sets the color that OpenGL will clear with
-	glClearColor(0.5, 0.6, 0.9, 1);
+	glClearColor(0.5f, 0.6f, 0.9f, 1.0f);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
