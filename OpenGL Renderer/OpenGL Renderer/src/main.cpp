@@ -113,6 +113,8 @@ int main(void) {
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	gladLoadGL(glfwGetProcAddress);
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -248,11 +250,71 @@ int main(void) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glEnable(GL_DEPTH_TEST);
+	
+	glm::vec3 cam_position(0, 0, 0);
 
-	///////////////////RENDER LOOP/////////////////////////////
+	glm::vec3 world_up(0, 1, 0);
+
+	glm::vec3 cam_forward(0, 0, -1);
+	glm::vec3 cam_right(1,0,0);
+	glm::vec3 cam_up(0, 1, 0);
+	//Pitch
+	float cam_x_euler = 0.0f;
+	//Yaw
+	float cam_y_euler = 0.0f;
+	//Roll
+	float cam_z_euler = 0.0f;
+
+	cam_forward.x = glm::cos(glm::radians(cam_x_euler)) * glm::sin(glm::radians(cam_y_euler));
+	cam_forward.y = -glm::sin(glm::radians(cam_x_euler));
+	cam_forward.z = glm::cos(glm::radians(cam_x_euler)) * glm::cos(glm::radians(cam_y_euler));
+
+	cam_right.x = -glm::cos(glm::radians(cam_y_euler));
+	cam_right.y = 0;
+	cam_right.z = glm::sin(glm::radians(cam_y_euler));
+
+	cam_up = glm::cross(cam_forward, cam_right);
+
+	float mouse_delta_x(0.0f), mouse_delta_y(0.0f);
+
+	const float mouse_sensitivity = 0.1f;
+
+	/////////////////// LOOP /////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
+		
+		//Delta Time calculation
+		static float previous_frame_time;
+		float delta_time = (float)glfwGetTime() - previous_frame_time;
+		previous_frame_time = (float)glfwGetTime();
+
+		static float previous_mouse_delta_x, previous_mouse_delta_y;
+		double current_mouse_x, current_mouse_y;
+		glfwGetCursorPos(window, &current_mouse_x, &current_mouse_y);
+		float mouse_delta_x((float)current_mouse_x - previous_mouse_delta_x), mouse_delta_y((float)current_mouse_y - previous_mouse_delta_y);
+		previous_mouse_delta_x = (float)current_mouse_x;
+		previous_mouse_delta_y = (float)current_mouse_y;
+
+		cam_x_euler -= mouse_delta_y * 0.1f;
+		cam_y_euler += mouse_delta_x * 0.1f;
+
+		//https://gamedev.stackexchange.com/questions/190054/how-to-calculate-the-forward-up-right-vectors-using-the-rotation-angles
+		cam_forward.x = glm::cos(glm::radians(cam_x_euler)) * glm::sin(glm::radians(cam_y_euler));
+		cam_forward.y = -glm::sin(glm::radians(cam_x_euler));
+		cam_forward.z = glm::cos(glm::radians(cam_x_euler)) * glm::cos(glm::radians(cam_y_euler));
+
+		cam_right.x = -glm::cos(glm::radians(cam_y_euler));
+		cam_right.y = 0;
+		cam_right.z = glm::sin(glm::radians(cam_y_euler));
+
+		cam_up = glm::cross(cam_forward, cam_right);
+
 		//Check inputs
+		float cam_speed = 5.0f * delta_time;
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) cam_position += cam_speed * cam_forward;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) cam_position -= cam_speed * cam_forward;
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cam_position += cam_speed * cam_right;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cam_position -= cam_speed * cam_right;
 
 		//////////////Render commands//////////////////
 		
@@ -264,10 +326,8 @@ int main(void) {
 		glm::mat4 viewSpace = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, -3.0f));
 
 		//Camera needs a forward that can be added to its position so that its look direction can be determined
-		glm::vec3 position(0, 0, 3);
-		glm::vec3 up(0, 1, 0);
 
-		glm::mat4 look_at = glm::lookAt(position, glm::vec3(0, 0, 0), up);
+		glm::mat4 look_at = glm::lookAt(cam_position, cam_position + cam_forward, world_up);
 
 		viewSpace = glm::rotate(viewSpace, glm::radians(35.0f), glm::vec3(1.0f, 0.0, 0.0f));
 		glm::mat4 projectionSpace = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -281,6 +341,7 @@ int main(void) {
 		glBindTexture(GL_TEXTURE_2D, texture_id2);
 
 		glBindVertexArray(VAO);
+
 		//Specify that we are drawing triangles, the second argument is the starting index we'd like to begin drawing in our vertex array
 		//The final parameter is how many vertices we will be drawing
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -297,6 +358,7 @@ int main(void) {
 		//CheckEvents and swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 	}
 
 	glDeleteVertexArrays(1, &VAO);
