@@ -30,6 +30,9 @@
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\System\System.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="vendor\GLFW\lib-vc2022\glfw3.lib" />
@@ -927,6 +930,9 @@
     </ClInclude>
     <ClInclude Include="src\Include\Resources.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\System.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -151,6 +151,7 @@
     <ClInclude Include="src\Include\Resources.hpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ShaderLoader\ShaderLoader.cpp" />
+    <ClCompile Include="src\System\System.cpp" />
     <ClCompile Include="vendor\glm\include\detail\glm.cpp" />
     <ClCompile Include="vendor\glm\include\glm.cppm" />
   </ItemGroup>
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="src\Camera\Camera.hpp" />
     <ClInclude Include="src\ShaderLoader\ShaderLoader.hpp" />
+    <ClInclude Include="src\System\System.hpp" />
     <ClInclude Include="vendor\glad\include\glad\gl.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3native.h" />

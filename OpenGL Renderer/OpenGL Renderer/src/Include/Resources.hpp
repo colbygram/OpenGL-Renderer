@@ -22,6 +22,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
 #include "../ShaderLoader/ShaderLoader.hpp"
+#include "../Camera/Camera.hpp"
+#include "../System/System.hpp"
 
 #endif

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <glad/gl.h>
 
+
 static std::string LoadShader(const std::string file_path) {
     
     std::string   vertexCode;
@@ -56,6 +57,7 @@ static bool LinkShaderProgram(const unsigned int shader_program_id) {
         return false;
     }
     return true;
+
 }
 
 unsigned int Shader::Load::CreateShaderProgram(std::string vs_shader_file_path,

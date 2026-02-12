@@ -231,30 +231,10 @@ int main(void) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glEnable(GL_DEPTH_TEST);
-	
-	glm::vec3 cam_position(0, 0, 0);
+
+	Camera main_camera;
 
 	glm::vec3 world_up(0, 1, 0);
-
-	glm::vec3 cam_forward(0, 0, -1);
-	glm::vec3 cam_right(1,0,0);
-	glm::vec3 cam_up(0, 1, 0);
-	//Pitch
-	float cam_x_euler = 0.0f;
-	//Yaw
-	float cam_y_euler = 0.0f;
-	//Roll
-	float cam_z_euler = 0.0f;
-
-	cam_forward.x = glm::cos(glm::radians(cam_x_euler)) * glm::sin(glm::radians(cam_y_euler));
-	cam_forward.y = -glm::sin(glm::radians(cam_x_euler));
-	cam_forward.z = glm::cos(glm::radians(cam_x_euler)) * glm::cos(glm::radians(cam_y_euler));
-
-	cam_right.x = -glm::cos(glm::radians(cam_y_euler));
-	cam_right.y = 0;
-	cam_right.z = glm::sin(glm::radians(cam_y_euler));
-
-	cam_up = glm::cross(cam_forward, cam_right);
 
 	float mouse_delta_x(0.0f), mouse_delta_y(0.0f);
 
@@ -262,44 +242,21 @@ int main(void) {
 
 	/////////////////// LOOP /////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
-		
-		//Delta Time calculation
-		static float previous_frame_time;
-		float delta_time = (float)glfwGetTime() - previous_frame_time;
-		previous_frame_time = (float)glfwGetTime();
+		//Calculate Delta Time
+		float delta_time = System::Time::GetDeltaTime();
 
 		//Mouse Delta Movement calculation
-		static float previous_mouse_delta_x, previous_mouse_delta_y;
-		double current_mouse_x, current_mouse_y;
-		glfwGetCursorPos(window, &current_mouse_x, &current_mouse_y);
-		float mouse_delta_x((float)current_mouse_x - previous_mouse_delta_x), mouse_delta_y((float)current_mouse_y - previous_mouse_delta_y);
-		previous_mouse_delta_x = (float)current_mouse_x;
-		previous_mouse_delta_y = (float)current_mouse_y;
+		glm::vec2 mouse_delta = System::Mouse::GetDelta(window);
 
-		cam_x_euler += mouse_delta_y * 0.1f;
-		cam_y_euler -= mouse_delta_x * 0.1f;
-
-		if (cam_x_euler > 89.0f) cam_x_euler = 89.0f;
-		else if (cam_x_euler < -89.0f) cam_x_euler = -89.0f;
-
-		//https://gamedev.stackexchange.com/questions/190054/how-to-calculate-the-forward-up-right-vectors-using-the-rotation-angles
-		cam_forward.x = glm::cos(glm::radians(cam_x_euler)) * glm::sin(glm::radians(cam_y_euler));
-		cam_forward.y = -glm::sin(glm::radians(cam_x_euler));
-		cam_forward.z = glm::cos(glm::radians(cam_x_euler)) * glm::cos(glm::radians(cam_y_euler));
-
-		cam_right.x = -glm::cos(glm::radians(cam_y_euler));
-		cam_right.y = 0;
-		cam_right.z = glm::sin(glm::radians(cam_y_euler));
-
-		cam_up = glm::cross(cam_forward, cam_right);
+		System::Cam::Update(main_camera, mouse_delta, 0.1f, 89.0f);
 
 		//Check inputs
 		float cam_speed = 5.0f * delta_time;
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) cam_position += cam_speed * cam_forward;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) cam_position -= cam_speed * cam_forward;
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cam_position += cam_speed * cam_right;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cam_position -= cam_speed * cam_right;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) main_camera.AddPosition(cam_speed * main_camera.GetForward());
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) main_camera.AddPosition(-(cam_speed * main_camera.GetForward()));
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) main_camera.AddPosition(cam_speed * main_camera.GetRight());
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) main_camera.AddPosition(-(cam_speed * main_camera.GetRight()));
 
 		//////////////Render commands//////////////////
 		
@@ -308,14 +265,10 @@ int main(void) {
 		//After setting up VAO, VBO and shaders to use those, we can finally render triangle to screen
 		glUseProgram(program_id);
 
-		glm::mat4 viewSpace = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, -3.0f));
-
 		//Camera needs a forward that can be added to its position so that its look direction can be determined
 
-		glm::mat4 look_at = glm::lookAt(cam_position, cam_position + cam_forward, world_up);
-
-		viewSpace = glm::rotate(viewSpace, glm::radians(35.0f), glm::vec3(1.0f, 0.0, 0.0f));
-		glm::mat4 projectionSpace = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+		glm::mat4 look_at = main_camera.GetViewMatrix();
+		glm::mat4 projectionSpace = main_camera.GetProjectionMatrix();
 
 		glUniformMatrix4fv(glGetUniformLocation(program_id, "projection"), 1, GL_FALSE, glm::value_ptr(projectionSpace));
 		glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_FALSE, glm::value_ptr(look_at));
