@@ -147,8 +147,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera\Camera.cpp" />
+    <ClInclude Include="src\Include\Resources.hpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ShaderLoader\ShaderLoader.cpp" />
+    <ClCompile Include="src\System\System.cpp" />
     <ClCompile Include="vendor\glm\include\detail\glm.cpp" />
     <ClCompile Include="vendor\glm\include\glm.cppm" />
   </ItemGroup>
@@ -163,7 +166,9 @@
     <Library Include="vendor\GLFW\lib-vc2022\glfw3_mt.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ShaderLoader\ShaderLoader.h" />
+    <ClInclude Include="src\Camera\Camera.hpp" />
+    <ClInclude Include="src\ShaderLoader\ShaderLoader.hpp" />
+    <ClInclude Include="src\System\System.hpp" />
     <ClInclude Include="vendor\glad\include\glad\gl.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3native.h" />
