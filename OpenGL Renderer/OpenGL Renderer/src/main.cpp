@@ -240,7 +240,7 @@ int main(void) {
 
 	const float mouse_sensitivity = 0.1f;
 
-	/////////////////// LOOP /////////////////////////////
+	///////////////////////// LOOP /////////////////////////////
 	while (!glfwWindowShouldClose(window)) {
 		//Calculate Delta Time
 		float delta_time = System::Time::GetDeltaTime();
