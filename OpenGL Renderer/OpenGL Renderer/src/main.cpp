@@ -189,6 +189,7 @@ int main(void) {
 	glGenTextures(1, &texture_id1);
 	glGenTextures(1, &texture_id2);
 	
+	//Needed for OpenGL
 	stbi_set_flip_vertically_on_load(true);
 
 	int texture_width, texture_height, texture_nr_channels;
